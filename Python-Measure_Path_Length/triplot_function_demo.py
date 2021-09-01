@@ -1,17 +1,6 @@
 import matplotlib.tri as tri
 import numpy as np
 
-def matrixPow(Matrix,n):
-    """
-    Calculate nth power of matrix
-    """
-    if(type(Matrix)==list):
-        Matrix=np.array(Matrix)
-    if(n==1):
-        return Matrix
-    else:
-        return np.matmul(Matrix,matrixPow(Matrix,n-1))
-
 def triplot_distance(xy):
     """
     Measure distance between each pair of points by the number of lines between them under triangulation
@@ -41,10 +30,12 @@ def triplot_distance(xy):
 
     power = 1
     counter = 0
+    adjacency_pow = np.eye(n)
 
     while counter < n**2 - n:
-        adjacency_pow = matrixPow(adjacency,power)
+        adjacency_pow = np.matmul(adjacency, adjacency_pow)
         alter = np.logical_and(adjacency_pow != 0, distance_tag == 0)
+        adjacency_pow[alter] = 1
         np.fill_diagonal(alter,False)
         distance[alter] = power
         distance_tag[alter] = 1
